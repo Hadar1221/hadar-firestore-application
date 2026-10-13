@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "782747139030",
+    "project_id": "hadarproject-2a301",
+    "storage_bucket": "hadarproject-2a301.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782747139030:android:7aaf615bd48a452e300277",
+        "android_client_info": {
+          "package_name": "com.katza.myfirebaseapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoKeW7xgo_nSjaVFt_sQK0q4kg2givLJY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
