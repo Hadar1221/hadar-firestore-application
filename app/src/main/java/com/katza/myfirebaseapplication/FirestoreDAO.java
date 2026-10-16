@@ -1,3 +1,4 @@
+
 package com.katza.myfirebaseapplication;
 
 import android.util.Log;
@@ -17,66 +18,123 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FirestoreDAO {
-        private static final String COLLECTION_NAME = "students";  //Data Access Object
 
+    private static final String COLLECTION_NAME = "shift"; //Data Access Object
 
-        public void createDocument(String name, String id, int grade) {
-            Map<String, Object> studentRecord = new HashMap<>();
-            studentRecord.put("fullName",name);
-            studentRecord.put("id",id);
-            studentRecord.put("grade",grade);
+    // הוספת משמרת
+    public void createDocument(String date, String startHour, String finishHour, int payment) {
 
+        Map<String, Object> shiftRecord = new HashMap<>();
+        shiftRecord.put("date", date);
+        shiftRecord.put("startHour", startHour);
+        shiftRecord.put("finishHour", finishHour);
+        shiftRecord.put("payment", payment);
 
-            //FirebaseFirestore db = FirebaseFirestore.getInstance();
-            DocumentReference docRef = FirebaseFirestore.getInstance().
-                    collection(COLLECTION_NAME).document(id);
+        DocumentReference docRef = FirebaseFirestore.getInstance()
+                .collection(COLLECTION_NAME).document(date);
 
+        docRef.set(shiftRecord)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("DAO_FIREBASE", "SUCCESSFUL WRITE!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("DAO_FIREBASE", "WRITE FAILED", e);
+                    }
+                });
+    }
 
-            docRef.set(studentRecord).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    Log.d("DAO_FIREBASE","SUCCESSFUL WRITE!");
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("DAO_FIREBASE",e.getMessage().toString());
-                }
-            });
+    // עדכון משמרת קיימת
+    public void updateDocument(String date, String startHour, String finishHour, int payment) {
 
-        }
+        DocumentReference docRef = FirebaseFirestore.getInstance()
+                .collection(COLLECTION_NAME).document(date);
+
+        Map<String, Object> shiftRecord = new HashMap<>();
+        shiftRecord.put("startHour", startHour);
+        shiftRecord.put("finishHour", finishHour);
+        shiftRecord.put("payment", payment);
+
+        docRef.update(shiftRecord)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("DAO_FIREBASE", "SUCCESSFUL UPDATE!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("DAO_FIREBASE", "UPDATE FAILED", e);
+                    }
+                });
+    }
+
+    // קריאת משמרת לפי תאריך
     public void readDocumentById(String docID, IFirestoreCallback iFirestoreCallback) {
-        DocumentReference docRef = FirebaseFirestore.getInstance().collection(COLLECTION_NAME).document(docID);
+
+        DocumentReference docRef = FirebaseFirestore.getInstance()
+                .collection(COLLECTION_NAME).document(docID);
 
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Student student = documentSnapshot.toObject(Student.class);
-                Log.d("DAO_FIREBASE", "SUCCESSFUL READ!" + student);
-                ArrayList<Student> students = new ArrayList<>();
-                students.add(student);
-                iFirestoreCallback.onDataReceived(students);
+
+                ArrayList<Shift> shifts = new ArrayList<>();
+
+                if (documentSnapshot.exists()) {
+                    Shift shift = documentSnapshot.toObject(Shift.class);
+
+                    if (shift != null) {
+                        shifts.add(shift);
+                        Log.d("DAO_FIREBASE", "SUCCESSFUL READ! " + shift);
+                    }
+                }
+
+                iFirestoreCallback.onDataReceived(shifts);
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("DAO_FIREBASE", "READ FAILED", e);
+                iFirestoreCallback.onDataReceived(new ArrayList<>());
+            }
         });
+    }
 
-
-        }
-
+    // הצגת כל המשמרות
     public void readAllDocuments(IFirestoreCallback iFirestoreCallback) {
+
         CollectionReference colRef = FirebaseFirestore.getInstance()
                 .collection(COLLECTION_NAME);
 
         colRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                ArrayList<Student> students = new ArrayList<>();
+
+                ArrayList<Shift> shifts = new ArrayList<>();
+
                 for (DocumentSnapshot docSS : queryDocumentSnapshots.getDocuments()) {
-                    Student student = docSS.toObject(Student.class);
-                    Log.d("DAO_FIREBASE", "SUCCESSFUL READ!!" + student);
-                    students.add(student);
+
+                    Shift shift = docSS.toObject(Shift.class);
+
+                    if (shift != null) {
+                        Log.d("DAO_FIREBASE", "SUCCESSFUL READ!! " + shift);
+                        shifts.add(shift);
+                    }
                 }
-                iFirestoreCallback.onDataReceived(students);
+
+                iFirestoreCallback.onDataReceived(shifts);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("DAO_FIREBASE", "READ ALL FAILED", e);
+                iFirestoreCallback.onDataReceived(new ArrayList<>());
             }
         });
     }

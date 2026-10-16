@@ -1,19 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:id="@+id/main" android:layout_width="match_parent" android:layout_height="match_parent">
-    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" app:layout_constraintBottom_toTopOf="@id/bottomlayout" app:layout_constraintTop_toTopOf="parent">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="40sp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp" android:textDirection="rtl" android:id="@+id/tvcontent"/>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/shiftips_background">
+
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        android:background="@color/shiftips_light_purple"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/appTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shiftips"
+            android:textColor="@color/shiftips_dark_purple"
+            android:textStyle="bold"
+            android:textSize="30sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="המשמרות והשכר שלך במקום אחד ✨"
+            android:textColor="@color/shiftips_gray"
+            android:textSize="14sp"
+            android:layout_marginTop="5dp"/>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="false"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvcontent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/shiftips_dark"
+                android:textSize="18sp"
+                android:textDirection="rtl"
+                android:gravity="right"
+                android:padding="14dp"/>
+
+            <LinearLayout
+                android:id="@+id/shiftListLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
         </LinearLayout>
     </ScrollView>
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/bottomlayout" android:orientation="vertical" android:gravity="center" app:layout_constraintBottom_toBottomOf="parent">
-        <EditText android:layout_width="300dp" android:layout_height="wrap_content" android:id="@+id/tz" android:gravity="center" android:hint="תעודת זהות"/>
-        <EditText android:layout_width="300dp" android:layout_height="wrap_content" android:id="@+id/fullname" android:gravity="center" android:hint="שם מלא"/>
-        <EditText android:layout_width="300dp" android:layout_height="wrap_content" android:id="@+id/grade" android:gravity="center" android:hint="ציון סופי"/>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-            <Button android:id="@+id/btnInsert" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="הוסף תלמיד"/>
-            <Button android:id="@+id/btnSelect" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="הצג תלמידים"/>
-            <Button android:id="@+id/btnUpdate" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="עדכן תלמיד"/>
-            <Button android:id="@+id/btnDelete" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="מחק תלמיד"/>
+
+    <ScrollView
+        android:id="@+id/formScroll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fillViewport="false"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/bottomlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:gravity="center"
+            android:background="@drawable/rounded_card"
+            android:layout_margin="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="פרטי המשמרת"
+                android:textColor="@color/shiftips_dark"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="20dp"/>
+
+            <EditText
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:background="@drawable/rounded_field"
+                android:hint="📅  תאריך"
+                android:inputType="date"
+                android:textColor="@color/shiftips_dark"
+                android:gravity="center"
+                android:layout_marginBottom="14dp"/>
+
+            <EditText
+                android:id="@+id/startHour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:background="@drawable/rounded_field"
+                android:hint="◷  שעת התחלה"
+                android:inputType="time"
+                android:textColor="@color/shiftips_dark"
+                android:gravity="center"
+                android:layout_marginBottom="14dp"/>
+
+            <EditText
+                android:id="@+id/finishHour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:background="@drawable/rounded_field"
+                android:hint="◷  שעת סיום"
+                android:inputType="time"
+                android:textColor="@color/shiftips_dark"
+                android:gravity="center"
+                android:layout_marginBottom="14dp"/>
+
+            <EditText
+                android:id="@+id/payment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:background="@drawable/rounded_field"
+                android:hint="₪  שכר המשמרת"
+                android:inputType="number"
+                android:textColor="@color/shiftips_dark"
+                android:gravity="center"
+                android:layout_marginBottom="20dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnInsert"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="＋  הוסף משמרת"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/shiftips_purple"
+                app:cornerRadius="16dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSelect"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="הצג משמרות"
+                android:backgroundTint="@color/shiftips_purple"
+                app:cornerRadius="16dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="שמור שינויים"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/shiftips_purple"
+                app:cornerRadius="16dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDelete"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="מחק משמרת"
+                android:textColor="@color/white"
+                android:backgroundTint="#E94B75"
+                app:cornerRadius="16dp"/>
+
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:menu="@menu/bottom_menu"
+        app:itemIconTint="@color/shiftips_purple"
+        app:itemTextColor="@color/shiftips_dark_purple"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,4 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="shiftips_purple">#7835C8</color>
+    <color name="shiftips_dark_purple">#57249C</color>
+    <color name="shiftips_light_purple">#F1E5FF</color>
+    <color name="shiftips_background">#FAF8FF</color>
+    <color name="shiftips_dark">#25204A</color>
+    <color name="shiftips_gray">#77728A</color>
+    <color name="shiftips_pink">#FFE7F1</color>
 </resources>
