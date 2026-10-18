@@ -138,4 +138,20 @@ public class FirestoreDAO {
             }
         });
     }
+    public void deleteDocument(String documentID)
+    {
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection(COLLECTION_NAME).document(documentID);
+        docRef.delete().addOnCanceledListener(new OnSuccessListener<void>()
+        {
+            @Override
+            public void onSuccess(void unused) {
+                Log.d("DAO_FIREBASE", "SUCESSFUL DELETE!");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("DAO_FIREBASE", e.getMessage());
+            }
+        });
+    }
 }
