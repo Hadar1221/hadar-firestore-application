@@ -1,6 +1,7 @@
 
 package com.katza.myfirebaseapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private String selectedShiftDate = null;
     private int currentPage = R.id.nav_add;
 
+    FirestoreDAO fsDAO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         formScroll = findViewById(R.id.formScroll);
         shiftListLayout = findViewById(R.id.shiftListLayout);
 
-        FirestoreDAO fsDAO = new FirestoreDAO();
+        fsDAO = new FirestoreDAO();
 
         BottomNavigationView bottomNavigation =
                 findViewById(R.id.bottomNavigation);
@@ -337,6 +340,31 @@ public class MainActivity extends AppCompatActivity {
                 fsDAO.deleteDocument(etDate.getText().toString());
             }
         });
+
+        Button btnZZZ = findViewById(R.id.ZZZ);
+        btnZZZ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            String searchDate = ed.getText().toString();
+            public void onClick(View v) {
+                fsDAO.readAllDocumentsByDate(searchDate, new IFirestoreCallback() {
+                    @Override
+                    public void onDataReceived(ArrayList<Shift> shifts) {
+                                tvshift.setText("");
+
+                                if (shifts != null && !shifts.isEmpty()) {
+                                    Shift shift = shifts.get(0);
+
+                                    Intent intent = new Intent(MainActivity.this, Shift.class);
+                                    intent.putExtra("shift", shift);
+                                    startActivity(intent);
+
+                                } else {
+                                    tvcontent.setText("Couldn't find a show on " + searchDate);
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     // הסתרת כל התוכן במעבר בין עמודים
@@ -383,4 +411,18 @@ public class MainActivity extends AppCompatActivity {
         // הצגת הטופס המעוצב
         formScroll.setVisibility(View.VISIBLE);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        fsDAO.listenToADocumentChange("16.10.26");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        fsDAO.stopListening();
+    }
+
+
 }

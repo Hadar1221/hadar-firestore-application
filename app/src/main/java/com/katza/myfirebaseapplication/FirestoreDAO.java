@@ -4,13 +4,17 @@ package com.katza.myfirebaseapplication;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -20,6 +24,9 @@ import java.util.Map;
 public class FirestoreDAO {
 
     private static final String COLLECTION_NAME = "shift"; //Data Access Object
+    private static final String COLLLECTION_NAME = "shift";
+
+    ListenerRegistration listenerRegistration;
 
     // הוספת משמרת
     public void createDocument(String date, String startHour, String finishHour, int payment) {
@@ -138,19 +145,58 @@ public class FirestoreDAO {
             }
         });
     }
-    public void deleteDocument(String documentID)
-    {
+
+    public void deleteDocument(String documentID) {
         DocumentReference docRef = FirebaseFirestore.getInstance().collection(COLLECTION_NAME).document(documentID);
-        docRef.delete().addOnCanceledListener(new OnSuccessListener<void>()
-        {
+        docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onSuccess(void unused) {
+            public void onSuccess(Void unused) {
                 Log.d("DAO_FIREBASE", "SUCESSFUL DELETE!");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d("DAO_FIREBASE", e.getMessage());
+            }
+        });
+    }
+
+    public void listenToDocumentChange(String docID) {
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection(COLLLECTION_NAME).document(docID);
+
+        listenerRegistration = docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                Log.d("DAO_FIREBASE", "DOC CHANGE");
+            }
+        });
+
+    }
+
+    public void stopListening() {
+        if (listenerRegistration != null) {
+            listenerRegistration.remove();
+            listenerRegistration = null;
+        }
+    }
+
+    public void listenToADocumentChange(String s) {
+
+    }
+    public void readAllDocumentsByDate(String searchDate, IFirestoreCallback iFirestoreCallback)
+    {
+        CollectionReference colRef = FirebaseFirestore.getInstance().collection(COLLLECTION_NAME);
+
+        colRef.whereEqualTo("date", searchDate).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                ArrayList<Shift> shifts = new ArrayList<>();
+                for (DocumentSnapshot docSS : queryDocumentSnapshots.getDocuments()) {
+                    Shift shift = docSS.toObject(Shift.class);
+                    //Log.d("DAO_FIREBASE","SUCCESSFUL READ!" + Shift);
+                    shifts.add(shift);
+                }
+                iFirestoreCallback.onDataReceived(shifts);
             }
         });
     }
