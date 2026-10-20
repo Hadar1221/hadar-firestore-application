@@ -193,7 +193,7 @@ public class FirestoreDAO {
                 ArrayList<Shift> shifts = new ArrayList<>();
                 for (DocumentSnapshot docSS : queryDocumentSnapshots.getDocuments()) {
                     Shift shift = docSS.toObject(Shift.class);
-                    //Log.d("DAO_FIREBASE","SUCCESSFUL READ!" + Shift);
+                    Log.d("DAO_FIREBASE","SUCCESSFUL READ!" + shift.getdate());
                     shifts.add(shift);
                 }
                 iFirestoreCallback.onDataReceived(shifts);

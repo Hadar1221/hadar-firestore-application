@@ -340,31 +340,6 @@ public class MainActivity extends AppCompatActivity {
                 fsDAO.deleteDocument(etDate.getText().toString());
             }
         });
-
-        Button btnZZZ = findViewById(R.id.ZZZ);
-        btnZZZ.setOnClickListener(new View.OnClickListener() {
-            @Override
-            String searchDate = ed.getText().toString();
-            public void onClick(View v) {
-                fsDAO.readAllDocumentsByDate(searchDate, new IFirestoreCallback() {
-                    @Override
-                    public void onDataReceived(ArrayList<Shift> shifts) {
-                                tvshift.setText("");
-
-                                if (shifts != null && !shifts.isEmpty()) {
-                                    Shift shift = shifts.get(0);
-
-                                    Intent intent = new Intent(MainActivity.this, Shift.class);
-                                    intent.putExtra("shift", shift);
-                                    startActivity(intent);
-
-                                } else {
-                                    tvcontent.setText("Couldn't find a show on " + searchDate);
-                                }
-                            }
-                        });
-            }
-        });
     }
 
     // הסתרת כל התוכן במעבר בין עמודים
