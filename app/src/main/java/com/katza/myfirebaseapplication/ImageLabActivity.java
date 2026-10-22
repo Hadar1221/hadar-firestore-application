@@ -137,7 +137,7 @@ public class ImageLabActivity extends AppCompatActivity {
                             selectedFromCamera = false;
 
                             imagePreview.setImageResource(
-                                    R.drawable.sample_image);
+                                    android.R.drawable.ic_menu_gallery);
 
                             status("נבחרה תמונת Drawable לדוגמה");
 

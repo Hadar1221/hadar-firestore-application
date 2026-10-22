@@ -4,18 +4,12 @@ package com.katza.myfirebaseapplication;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,181 +17,298 @@ import java.util.Map;
 
 public class FirestoreDAO {
 
-    private static final String COLLECTION_NAME = "shift"; //Data Access Object
-    private static final String COLLLECTION_NAME = "shift";
+    private static final String COLLECTION_NAME = "shift";
 
-    ListenerRegistration listenerRegistration;
+    private final FirebaseFirestore db =
+            FirebaseFirestore.getInstance();
 
-    // הוספת משמרת
-    public void createDocument(String date, String startHour, String finishHour, int payment) {
+    private ListenerRegistration listenerRegistration;
+
+    // הוספת משמרת חדשה
+    public void createDocument(
+            String date,
+            String startHour,
+            String finishHour,
+            int payment) {
 
         Map<String, Object> shiftRecord = new HashMap<>();
+
         shiftRecord.put("date", date);
         shiftRecord.put("startHour", startHour);
         shiftRecord.put("finishHour", finishHour);
         shiftRecord.put("payment", payment);
 
-        DocumentReference docRef = FirebaseFirestore.getInstance()
-                .collection(COLLECTION_NAME).document(date);
-
-        docRef.set(shiftRecord)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("DAO_FIREBASE", "SUCCESSFUL WRITE!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("DAO_FIREBASE", "WRITE FAILED", e);
-                    }
-                });
+        db.collection(COLLECTION_NAME)
+                .document(date)
+                .set(shiftRecord)
+                .addOnSuccessListener(unused ->
+                        Log.d("DAO_FIREBASE",
+                                "SUCCESSFUL WRITE"))
+                .addOnFailureListener(e ->
+                        Log.e("DAO_FIREBASE",
+                                "WRITE FAILED", e));
     }
 
-    // עדכון משמרת קיימת
-    public void updateDocument(String date, String startHour, String finishHour, int payment) {
-
-        DocumentReference docRef = FirebaseFirestore.getInstance()
-                .collection(COLLECTION_NAME).document(date);
+    // עדכון משמרת
+    public void updateDocument(
+            String date,
+            String startHour,
+            String finishHour,
+            int payment) {
 
         Map<String, Object> shiftRecord = new HashMap<>();
+
         shiftRecord.put("startHour", startHour);
         shiftRecord.put("finishHour", finishHour);
         shiftRecord.put("payment", payment);
 
-        docRef.update(shiftRecord)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("DAO_FIREBASE", "SUCCESSFUL UPDATE!");
+        db.collection(COLLECTION_NAME)
+                .document(date)
+                .update(shiftRecord)
+                .addOnSuccessListener(unused ->
+                        Log.d("DAO_FIREBASE",
+                                "SUCCESSFUL UPDATE"))
+                .addOnFailureListener(e ->
+                        Log.e("DAO_FIREBASE",
+                                "UPDATE FAILED", e));
+    }
+
+    // קריאת משמרת לפי מזהה
+    public void readDocumentById(
+            String docID,
+            IFirestoreCallback callback) {
+
+        db.collection(COLLECTION_NAME)
+                .document(docID)
+                .get()
+                .addOnSuccessListener(document -> {
+
+                    ArrayList<Shift> shifts =
+                            new ArrayList<>();
+
+                    if (document.exists()) {
+                        Shift shift =
+                                document.toObject(Shift.class);
+
+                        if (shift != null) {
+                            shifts.add(shift);
+                        }
                     }
+
+                    callback.onDataReceived(shifts);
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("DAO_FIREBASE", "UPDATE FAILED", e);
-                    }
+                .addOnFailureListener(e -> {
+                    Log.e("DAO_FIREBASE",
+                            "READ FAILED", e);
+
+                    callback.onDataReceived(
+                            new ArrayList<>());
                 });
     }
 
-    // קריאת משמרת לפי תאריך
-    public void readDocumentById(String docID, IFirestoreCallback iFirestoreCallback) {
+    // שליפת כל המשמרות
+    public void readAllDocuments(
+            IFirestoreCallback callback) {
 
-        DocumentReference docRef = FirebaseFirestore.getInstance()
-                .collection(COLLECTION_NAME).document(docID);
+        db.collection(COLLECTION_NAME)
+                .get()
+                .addOnSuccessListener(snapshots -> {
 
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    ArrayList<Shift> shifts =
+                            new ArrayList<>();
 
-                ArrayList<Shift> shifts = new ArrayList<>();
+                    for (DocumentSnapshot document :
+                            snapshots.getDocuments()) {
 
-                if (documentSnapshot.exists()) {
-                    Shift shift = documentSnapshot.toObject(Shift.class);
+                        Shift shift =
+                                document.toObject(Shift.class);
 
-                    if (shift != null) {
-                        shifts.add(shift);
-                        Log.d("DAO_FIREBASE", "SUCCESSFUL READ! " + shift);
+                        if (shift != null) {
+                            shifts.add(shift);
+                        }
                     }
-                }
 
-                iFirestoreCallback.onDataReceived(shifts);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("DAO_FIREBASE", "READ FAILED", e);
-                iFirestoreCallback.onDataReceived(new ArrayList<>());
-            }
-        });
+                    callback.onDataReceived(shifts);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DAO_FIREBASE",
+                            "READ ALL FAILED", e);
+
+                    callback.onDataReceived(
+                            new ArrayList<>());
+                });
     }
 
-    // הצגת כל המשמרות
-    public void readAllDocuments(IFirestoreCallback iFirestoreCallback) {
+    // שליפה מותנית לפי תאריך - WHERE Query
+    public void readAllDocumentsByDate(
+            String searchDate,
+            IFirestoreCallback callback) {
 
-        CollectionReference colRef = FirebaseFirestore.getInstance()
-                .collection(COLLECTION_NAME);
+        db.collection(COLLECTION_NAME)
+                .whereEqualTo("date", searchDate)
+                .get()
+                .addOnSuccessListener(snapshots -> {
 
-        colRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    ArrayList<Shift> shifts =
+                            new ArrayList<>();
 
-                ArrayList<Shift> shifts = new ArrayList<>();
+                    for (DocumentSnapshot document :
+                            snapshots.getDocuments()) {
 
-                for (DocumentSnapshot docSS : queryDocumentSnapshots.getDocuments()) {
+                        Shift shift =
+                                document.toObject(Shift.class);
 
-                    Shift shift = docSS.toObject(Shift.class);
-
-                    if (shift != null) {
-                        Log.d("DAO_FIREBASE", "SUCCESSFUL READ!! " + shift);
-                        shifts.add(shift);
+                        if (shift != null) {
+                            shifts.add(shift);
+                        }
                     }
-                }
 
-                iFirestoreCallback.onDataReceived(shifts);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("DAO_FIREBASE", "READ ALL FAILED", e);
-                iFirestoreCallback.onDataReceived(new ArrayList<>());
-            }
-        });
+                    callback.onDataReceived(shifts);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DAO_FIREBASE",
+                            "WHERE QUERY FAILED", e);
+
+                    callback.onDataReceived(
+                            new ArrayList<>());
+                });
     }
 
+    // מחיקת משמרת
     public void deleteDocument(String documentID) {
-        DocumentReference docRef = FirebaseFirestore.getInstance().collection(COLLECTION_NAME).document(documentID);
-        docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d("DAO_FIREBASE", "SUCESSFUL DELETE!");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("DAO_FIREBASE", e.getMessage());
-            }
-        });
+
+        db.collection(COLLECTION_NAME)
+                .document(documentID)
+                .delete()
+                .addOnSuccessListener(unused ->
+                        Log.d("DAO_FIREBASE",
+                                "SUCCESSFUL DELETE"))
+                .addOnFailureListener(e ->
+                        Log.e("DAO_FIREBASE",
+                                "DELETE FAILED", e));
     }
 
+    // מאזין בזמן אמת לכל המשמרות
+    public void listenToAllShifts(
+            IFirestoreCallback callback) {
+
+        stopListening();
+
+        listenerRegistration =
+                db.collection(COLLECTION_NAME)
+                        .addSnapshotListener(
+                                (snapshots, error) -> {
+
+                                    if (error != null) {
+                                        Log.e(
+                                                "DAO_FIREBASE",
+                                                "LISTENER FAILED",
+                                                error);
+                                        return;
+                                    }
+
+                                    if (snapshots == null) {
+                                        return;
+                                    }
+
+                                    ArrayList<Shift> shifts =
+                                            new ArrayList<>();
+
+                                    for (DocumentSnapshot document :
+                                            snapshots.getDocuments()) {
+
+                                        Shift shift =
+                                                document.toObject(
+                                                        Shift.class);
+
+                                        if (shift != null) {
+                                            shifts.add(shift);
+                                        }
+                                    }
+
+                                    callback.onDataReceived(shifts);
+                                });
+    }
+
+    // מאזין בזמן אמת לפי תאריך
+    public void listenToShiftsByDate(
+            String date,
+            IFirestoreCallback callback) {
+
+        stopListening();
+
+        listenerRegistration =
+                db.collection(COLLECTION_NAME)
+                        .whereEqualTo("date", date)
+                        .addSnapshotListener(
+                                (snapshots, error) -> {
+
+                                    if (error != null) {
+                                        Log.e(
+                                                "DAO_FIREBASE",
+                                                "FILTER LISTENER FAILED",
+                                                error);
+                                        return;
+                                    }
+
+                                    if (snapshots == null) {
+                                        return;
+                                    }
+
+                                    ArrayList<Shift> shifts =
+                                            new ArrayList<>();
+
+                                    for (DocumentSnapshot document :
+                                            snapshots.getDocuments()) {
+
+                                        Shift shift =
+                                                document.toObject(
+                                                        Shift.class);
+
+                                        if (shift != null) {
+                                            shifts.add(shift);
+                                        }
+                                    }
+
+                                    callback.onDataReceived(shifts);
+                                });
+    }
+
+    // מאזין למסמך מסוים
     public void listenToDocumentChange(String docID) {
-        DocumentReference docRef = FirebaseFirestore.getInstance().collection(COLLLECTION_NAME).document(docID);
 
-        listenerRegistration = docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                Log.d("DAO_FIREBASE", "DOC CHANGE");
-            }
-        });
+        stopListening();
 
+        listenerRegistration =
+                db.collection(COLLECTION_NAME)
+                        .document(docID)
+                        .addSnapshotListener(
+                                (document, error) -> {
+
+                                    if (error != null) {
+                                        Log.e(
+                                                "DAO_FIREBASE",
+                                                "DOCUMENT LISTENER FAILED",
+                                                error);
+                                        return;
+                                    }
+
+                                    Log.d(
+                                            "DAO_FIREBASE",
+                                            "DOCUMENT CHANGED");
+                                });
     }
 
+    public void listenToADocumentChange(String docID) {
+        listenToDocumentChange(docID);
+    }
+
+    // עצירת המאזין
     public void stopListening() {
+
         if (listenerRegistration != null) {
             listenerRegistration.remove();
             listenerRegistration = null;
         }
-    }
-
-    public void listenToADocumentChange(String s) {
-
-    }
-    public void readAllDocumentsByDate(String searchDate, IFirestoreCallback iFirestoreCallback)
-    {
-        CollectionReference colRef = FirebaseFirestore.getInstance().collection(COLLLECTION_NAME);
-
-        colRef.whereEqualTo("date", searchDate).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                ArrayList<Shift> shifts = new ArrayList<>();
-                for (DocumentSnapshot docSS : queryDocumentSnapshots.getDocuments()) {
-                    Shift shift = docSS.toObject(Shift.class);
-                    Log.d("DAO_FIREBASE","SUCCESSFUL READ!" + shift.getdate());
-                    shifts.add(shift);
-                }
-                iFirestoreCallback.onDataReceived(shifts);
-            }
-        });
     }
 }

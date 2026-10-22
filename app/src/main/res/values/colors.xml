@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="shiftips_purple">#7835C8</color>
-    <color name="shiftips_dark_purple">#57249C</color>
-    <color name="shiftips_light_purple">#F1E5FF</color>
-    <color name="shiftips_background">#FAF8FF</color>
-    <color name="shiftips_dark">#25204A</color>
-    <color name="shiftips_gray">#77728A</color>
-    <color name="shiftips_pink">#FFE7F1</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <color name="shiftips_background">#F8F6FF</color>
+    <color name="shiftips_light_purple">#EDE2FF</color>
+    <color name="shiftips_purple">#8B5CEB</color>
+    <color name="shiftips_dark_purple">#3D237D</color>
+    <color name="shiftips_dark">#302A46</color>
+    <color name="shiftips_pink">#F9DDF1</color>
+    <color name="shiftips_gray">#817B95</color>
 </resources>
