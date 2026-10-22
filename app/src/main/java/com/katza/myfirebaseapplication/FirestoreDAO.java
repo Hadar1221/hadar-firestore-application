@@ -3,10 +3,6 @@ package com.katza.myfirebaseapplication;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -39,9 +35,8 @@ public class FirestoreDAO {
         shiftRecord.put("payment", payment);
 
         db.collection(COLLECTION_NAME)
-                .document(date)
-                .set(shiftRecord)
-                .addOnSuccessListener(unused ->
+                .add(shiftRecord)
+                .addOnSuccessListener(documentReference ->
                         Log.d("DAO_FIREBASE",
                                 "SUCCESSFUL WRITE"))
                 .addOnFailureListener(e ->
@@ -49,9 +44,9 @@ public class FirestoreDAO {
                                 "WRITE FAILED", e));
     }
 
-    // עדכון משמרת
+    // עדכון משמרת לפי מזהה המסמך
     public void updateDocument(
-            String date,
+            String documentID,
             String startHour,
             String finishHour,
             int payment) {
@@ -63,7 +58,7 @@ public class FirestoreDAO {
         shiftRecord.put("payment", payment);
 
         db.collection(COLLECTION_NAME)
-                .document(date)
+                .document(documentID)
                 .update(shiftRecord)
                 .addOnSuccessListener(unused ->
                         Log.d("DAO_FIREBASE",
@@ -139,7 +134,7 @@ public class FirestoreDAO {
                 });
     }
 
-    // שליפה מותנית לפי תאריך - WHERE Query
+    // שליפה לפי תאריך
     public void readAllDocumentsByDate(
             String searchDate,
             IFirestoreCallback callback) {
@@ -174,7 +169,7 @@ public class FirestoreDAO {
                 });
     }
 
-    // מחיקת משמרת
+    // מחיקת משמרת לפי מזהה המסמך
     public void deleteDocument(String documentID) {
 
         db.collection(COLLECTION_NAME)

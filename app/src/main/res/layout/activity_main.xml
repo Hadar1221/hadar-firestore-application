@@ -184,7 +184,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:hint="📅  תאריך"
-                android:inputType="date"
+                android:inputType="text"
                 android:gravity="center"
                 android:textColor="#302A46"
                 android:background="@drawable/rounded_field"
