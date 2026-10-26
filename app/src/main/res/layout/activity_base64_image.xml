@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/main"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:padding="16dp"
+android:gravity="center">
+
+<ImageView
+    android:id="@+id/ivBase64Image"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:scaleType="centerCrop"
+    android:contentDescription="התמונה שנבחרה" />
+
+<Button
+    android:id="@+id/btnTakeBase64Photo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="צלמי תמונה" />
+</LinearLayout>

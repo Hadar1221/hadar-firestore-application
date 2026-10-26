@@ -1,7 +1,7 @@
 package com.katza.myfirebaseapplication;
 
-public interface IFirestoreImageCallback {
-
-    void onSuccess();
-    void onFailure();
+public interface IFirestoreImageCallback<T> {
+    void onSuccess(T result);
+    void onFailure(Exception error);
 }
+

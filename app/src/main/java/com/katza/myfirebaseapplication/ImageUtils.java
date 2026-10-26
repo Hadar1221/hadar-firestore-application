@@ -1,15 +1,20 @@
+
 package com.katza.myfirebaseapplication;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ImageDecoder;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Base64;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class ImageUtils {
 
@@ -194,6 +199,75 @@ public class ImageUtils {
             if (current != bitmap) current.recycle();
 
             current = smaller;
+        }
+    }
+
+    public static Bitmap convertUriToBitmap(
+            Context context, Uri uri) throws IOException {
+
+        if (uri == null) {
+            return null;
+        }
+
+        ImageDecoder.Source source =
+                ImageDecoder.createSource(
+                        context.getContentResolver(), uri);
+
+        return ImageDecoder.decodeBitmap(
+                source,
+                new ImageDecoder.OnHeaderDecodedListener() {
+                    @Override
+                    public void onHeaderDecoded(
+                            ImageDecoder decoder,
+                            ImageDecoder.ImageInfo info,
+                            ImageDecoder.Source source) {
+
+                        int width = info.getSize().getWidth();
+                        int height = info.getSize().getHeight();
+
+                        float scale = Math.min(
+                                1f,
+                                (float) MAX_DIMENSION
+                                        / Math.max(width, height));
+
+                        int newWidth = Math.max(
+                                1, Math.round(width * scale));
+
+                        int newHeight = Math.max(
+                                1, Math.round(height * scale));
+
+                        decoder.setTargetSize(newWidth, newHeight);
+                        decoder.setAllocator(
+                                ImageDecoder.ALLOCATOR_SOFTWARE);
+                    }
+                });
+    }
+
+    public static String convertBitmapToBase64(Bitmap bitmap) {
+
+        byte[] bytes = compressImage(bitmap);
+
+        if (bytes == null) {
+            return null;
+        }
+
+        return Base64.encodeToString(bytes, Base64.NO_WRAP);
+    }
+
+    public static Bitmap convertBase64ToBitmap(String base64) {
+
+        if (base64 == null || base64.isEmpty()) {
+            return null;
+        }
+
+        try {
+            byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+
+            return BitmapFactory.decodeByteArray(
+                    bytes, 0, bytes.length);
+
+        } catch (IllegalArgumentException error) {
+            return null;
         }
     }
 }
