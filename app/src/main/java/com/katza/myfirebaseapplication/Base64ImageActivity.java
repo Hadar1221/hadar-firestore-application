@@ -31,7 +31,6 @@ public class Base64ImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_base64_image);
-        setContentView(R.layout.activity_base64_image);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -84,6 +83,14 @@ public class Base64ImageActivity extends AppCompatActivity {
                         } catch (IOException | RuntimeException error) {
                             showToastMessage("שגיאה: " + error.getMessage());
                         }
+                    }
+                });
+
+        findViewById(R.id.btnChooseBase64Image)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        galleryImageLauncher.launch("image/*");
                     }
                 });
     }

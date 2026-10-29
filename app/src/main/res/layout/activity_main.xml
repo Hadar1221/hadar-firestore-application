@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -86,6 +87,11 @@
                     android:padding="12dp"
                     android:textColor="#302A46"
                     android:background="@drawable/rounded_field"/>
+                <Button
+                    android:id="@+id/btnDelete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="מחיקת משמרת" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSearch"
@@ -275,14 +281,11 @@
                 android:backgroundTint="#8B5CEB"
                 app:cornerRadius="18dp"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDelete"
+            <Button
+                android:id="@+id/btnSelectAll"
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:text="מחיקת משמרת"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#E94B75"
-                app:cornerRadius="18dp"/>
+                android:layout_height="wrap_content"
+                android:text="הצגת כל המשמרות" />
         </LinearLayout>
     </ScrollView>
 
