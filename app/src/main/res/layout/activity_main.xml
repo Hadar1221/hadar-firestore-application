@@ -2,52 +2,265 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F6FF"
-    android:layoutDirection="rtl">
+    android:layoutDirection="rtl"
+    android:background="#F5F1FF">
 
+    <!-- כותרת עליונה -->
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:paddingTop="24dp"
-        android:paddingBottom="24dp"
-        android:background="#EDE2FF"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="22dp"
+        android:background="#F5F1FF"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
-            android:id="@+id/appTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="✦ Shiftips"
-            android:textColor="#493083"
-            android:textSize="34sp"
-            android:textStyle="bold"/>
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:text="▦"
+            android:textSize="29sp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/shiftips_button"
+            android:layout_marginEnd="12dp"/>
 
-        <TextView
-            android:id="@+id/headerSubtitle"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="המשמרות והשכר שלך במקום אחד ✨"
-            android:textColor="#81739D"
-            android:textSize="14sp"
-            android:layout_marginTop="5dp"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/appTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shiftips"
+                android:textColor="#493377"
+                android:textSize="27sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/headerSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ניהול המשמרות שלי"
+                android:textColor="#8876A6"
+                android:textSize="13sp"/>
+        </LinearLayout>
     </LinearLayout>
 
+    <!-- מסך הוספה ועדכון -->
+    <ScrollView
+        android:id="@+id/formScroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="false"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/bottomlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="22dp"
+            android:background="@drawable/shiftips_card"
+            android:elevation="3dp">
+
+            <TextView
+                android:id="@+id/formTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="הוספת משמרת"
+                android:textSize="23sp"
+                android:textStyle="bold"
+                android:textColor="#493377"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:id="@+id/formSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="מלאי את פרטי המשמרת"
+                android:textColor="#8876A6"
+                android:textSize="13sp"
+                android:layout_marginBottom="18dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="תאריך המשמרת"
+                android:textStyle="bold"
+                android:textColor="#493377"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:hint="📅  תאריך המשמרת"
+                android:inputType="text"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#493377"
+                android:textColorHint="#998BAF"
+                android:background="@drawable/shiftips_field"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- שעות העבודה -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="שעת התחלה"
+                        android:textStyle="bold"
+                        android:textColor="#493377"
+                        android:layout_marginBottom="8dp"/>
+
+                    <EditText
+                        android:id="@+id/startHour"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:hint="16:00"
+                        android:inputType="time"
+                        android:gravity="center"
+                        android:textColor="#493377"
+                        android:textColorHint="#998BAF"
+                        android:background="@drawable/shiftips_field"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="שעת סיום"
+                        android:textStyle="bold"
+                        android:textColor="#493377"
+                        android:layout_marginBottom="8dp"/>
+
+                    <EditText
+                        android:id="@+id/finishHour"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:hint="22:30"
+                        android:inputType="time"
+                        android:gravity="center"
+                        android:textColor="#493377"
+                        android:textColorHint="#998BAF"
+                        android:background="@drawable/shiftips_field"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="תשלום לשעה (₪)"
+                android:textStyle="bold"
+                android:textColor="#493377"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/payment"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:hint="הזיני תשלום לשעה"
+                android:inputType="number"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#493377"
+                android:textColorHint="#998BAF"
+                android:background="@drawable/shiftips_field"
+                android:layout_marginBottom="24dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnInsert"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:text="הוספת משמרת"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#9D83D9"
+                app:cornerRadius="16dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSelect"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="בחירת משמרת"
+                android:backgroundTint="#9D83D9"
+                app:cornerRadius="16dp"
+                android:visibility="gone"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnImages"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginTop="12dp"
+                android:text="📷 תמונות"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#9D83D9"
+                app:cornerRadius="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:text="שמירת השינויים"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#9D83D9"
+                app:cornerRadius="16dp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btnSelectAll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="הצגת כל המשמרות"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- מסכי משמרות, עדכון, מחיקה ושכר -->
     <ScrollView
         android:id="@+id/scrollContent"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="16dp"
         android:clipToPadding="false"
-        android:fillViewport="false"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,55 +276,62 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="18dp"
-                android:background="@drawable/rounded_card"
+                android:padding="20dp"
+                android:background="@drawable/shiftips_card"
                 android:elevation="3dp"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="18dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="⌕  מצאי את המשמרת שלך"
-                    android:textColor="#493083"
-                    android:textSize="19sp"
+                    android:text="מצאי את המשמרת שלך"
+                    android:textColor="#493377"
+                    android:textSize="21sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_marginBottom="16dp"/>
 
                 <EditText
                     android:id="@+id/etSearchDate"
                     android:layout_width="match_parent"
-                    android:layout_height="54dp"
-                    android:hint="📅  חיפוש לפי תאריך"
+                    android:layout_height="58dp"
+                    android:hint="חיפוש לפי תאריך"
                     android:singleLine="true"
-                    android:gravity="center"
-                    android:padding="12dp"
-                    android:textColor="#302A46"
-                    android:background="@drawable/rounded_field"/>
-                <Button
-                    android:id="@+id/btnDelete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="מחיקת משמרת" />
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="#493377"
+                    android:textColorHint="#998BAF"
+                    android:background="@drawable/shiftips_field"
+                    android:layout_marginBottom="12dp"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSearch"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_height="54dp"
                     android:text="חיפוש משמרת"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:backgroundTint="#8B5CEB"
-                    app:cornerRadius="18dp"/>
+                    android:backgroundTint="#9D83D9"
+                    app:cornerRadius="16dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDelete"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="8dp"
+                    android:text="מחיקת משמרת"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#A88ADB"
+                    app:cornerRadius="16dp"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnShowAll"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="8dp"
                     android:text="הצגת כל המשמרות"
-                    android:textColor="#493083"
-                    android:backgroundTint="#EDE2FF"
-                    app:cornerRadius="18dp"/>
+                    android:textColor="#493377"
+                    android:backgroundTint="#E9E0F8"
+                    app:cornerRadius="16dp"/>
             </LinearLayout>
 
             <TextView
@@ -119,176 +339,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="המשמרות שלי"
-                android:textColor="#493083"
-                android:textSize="23sp"
+                android:textSize="19sp"
                 android:textStyle="bold"
-                android:gravity="right"
-                android:paddingBottom="14dp"/>
+                android:textColor="#493377"
+                android:padding="18dp"
+                android:background="@drawable/shiftips_card"
+                android:elevation="2dp"/>
 
             <LinearLayout
                 android:id="@+id/shiftListLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
-
         </LinearLayout>
     </ScrollView>
 
-    <ScrollView
-        android:id="@+id/formScroll"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fillViewport="false"
-        android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:id="@+id/bottomlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:padding="22dp"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="@drawable/rounded_card"
-            android:elevation="3dp">
-
-            <TextView
-                android:id="@+id/formTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="✦ משמרת חדשה"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="#493083"
-                android:gravity="center"
-                android:layout_marginBottom="8dp"/>
-
-            <TextView
-                android:id="@+id/formSubtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ממלאים פרטים ושומרים בקלות"
-                android:textSize="14sp"
-                android:textColor="#81739D"
-                android:gravity="center"
-                android:layout_marginBottom="24dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="תאריך המשמרת"
-                android:textStyle="bold"
-                android:textColor="#493083"
-                android:layout_marginBottom="7dp"/>
-
-            <EditText
-                android:id="@+id/date"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="📅  תאריך"
-                android:inputType="text"
-                android:gravity="center"
-                android:textColor="#302A46"
-                android:background="@drawable/rounded_field"
-                android:layout_marginBottom="18dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="שעות העבודה"
-                android:textStyle="bold"
-                android:textColor="#493083"
-                android:layout_marginBottom="7dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="18dp">
-
-                <EditText
-                    android:id="@+id/startHour"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="56dp"
-                    android:hint="התחלה"
-                    android:inputType="time"
-                    android:gravity="center"
-                    android:textColor="#302A46"
-                    android:background="@drawable/rounded_field"
-                    android:layout_marginEnd="8dp"/>
-
-                <EditText
-                    android:id="@+id/finishHour"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="56dp"
-                    android:hint="סיום"
-                    android:inputType="time"
-                    android:gravity="center"
-                    android:textColor="#302A46"
-                    android:background="@drawable/rounded_field"/>
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="שכר המשמרת"
-                android:textStyle="bold"
-                android:textColor="#493083"
-                android:layout_marginBottom="7dp"/>
-
-            <EditText
-                android:id="@+id/payment"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="₪  שכר בשקלים"
-                android:inputType="number"
-                android:gravity="center"
-                android:textColor="#302A46"
-                android:background="@drawable/rounded_field"
-                android:layout_marginBottom="24dp"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnInsert"
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:text="＋  שמירת משמרת"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#8B5CEB"
-                app:cornerRadius="18dp"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSelect"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="בחירת משמרת"
-                android:backgroundTint="#8B5CEB"
-                app:cornerRadius="18dp"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnUpdate"
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:text="✓  שמירת השינויים"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#8B5CEB"
-                app:cornerRadius="18dp"/>
-
-            <Button
-                android:id="@+id/btnSelectAll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="הצגת כל המשמרות" />
-        </LinearLayout>
-    </ScrollView>
-
+    <!-- ניווט תחתון -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"

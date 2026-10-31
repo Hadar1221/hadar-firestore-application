@@ -12,13 +12,11 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
-import java.util.ArrayList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +26,6 @@ public class FirestoreDAO {
 
     private static final String COLLECTION_NAME = "shifts";
     private static final String STUDENTS_COLLECTION_NAME = "students";
-
 
     public void addShift(String date, String startHour, String endHour, int payment) {
 
@@ -43,7 +40,6 @@ public class FirestoreDAO {
 
         docRef.set(shiftRecord);
     }
-
 
     public void createDocument(String name, String id, int grade) {
         Map<String, Object> studentRecord = new HashMap<>();
@@ -67,7 +63,6 @@ public class FirestoreDAO {
             }
         });
     }
-
 
     public void readQueryDocuments(String date, IFirestoreCallback iFirestoreCallback) {
 
@@ -99,7 +94,6 @@ public class FirestoreDAO {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Shift shift = documentSnapshot.toObject(Shift.class);
-                //Log.d("DAO_FIREBASE", "SUCCESSFUL READ!" + shift);
                 ArrayList<Shift> shifts = new ArrayList<>();
                 shifts.add(shift);
                 iFirestoreCallback.onDataReceived(shifts);
@@ -134,7 +128,6 @@ public class FirestoreDAO {
                 ArrayList<Shift> shifts = new ArrayList<>();
                 for (DocumentSnapshot docSS : queryDocumentSnapshots.getDocuments()) {
                     Shift shift = docSS.toObject(Shift.class);
-                    //Log.d("DAO_FIREBASE", "SUCCESSFUL READ!" + shift);
                     shifts.add(shift);
                 }
                 iFirestoreCallback.onDataReceived(shifts);
@@ -147,12 +140,13 @@ public class FirestoreDAO {
         DocumentReference docRef = FirebaseFirestore.getInstance()
                 .collection(COLLECTION_NAME).document(documentID);
 
-        docRef.update("startHour", newStartHour, "endHour", newEndHour).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.d("DAO_FIREBASE", "SUCCESSFUL UPDATE!");
-            }
-        });
+        docRef.update("startHour", newStartHour, "endHour", newEndHour)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("DAO_FIREBASE", "SUCCESSFUL UPDATE!");
+                    }
+                });
     }
 
     public void deleteDocument(String documentID) {
@@ -179,18 +173,20 @@ public class FirestoreDAO {
 
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+            public void onEvent(@Nullable DocumentSnapshot value,
+                                @Nullable FirebaseFirestoreException error) {
 
             }
         });
     }
-    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+    public void onEvent(@Nullable DocumentSnapshot value,
+                        @Nullable FirebaseFirestoreException error) {
         if (value != null && value.exists()) {
             Shift shift = value.toObject(Shift.class);
             Log.d("CHANGED_DAO", shift.toString());
         }
     }
-
 
     private ListenerRegistration listenerRegistration;
 
@@ -222,5 +218,41 @@ public class FirestoreDAO {
             listenerRegistration = null;
         }
     }
-}
 
+    // תוספת: חיפוש מסמכים למחיקה לפי תאריך
+    public void findShiftsForDelete(String date,
+                                    OnSuccessListener<QuerySnapshot> listener) {
+
+        FirebaseFirestore.getInstance()
+                .collection(COLLECTION_NAME)
+                .whereEqualTo("date", date)
+                .get()
+                .addOnSuccessListener(listener);
+    }
+
+    public void updateDocument(String documentID,
+                               String newStartHour,
+                               String newEndHour,
+                               int newPayment) {
+
+        DocumentReference docRef = FirebaseFirestore.getInstance()
+                .collection(COLLECTION_NAME).document(documentID);
+
+        docRef.update(
+                "startHour", newStartHour,
+                "endHour", newEndHour,
+                "payment", newPayment
+        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d("DAO_FIREBASE", "SUCCESSFUL UPDATE!");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("DAO_FIREBASE", e.getMessage());
+            }
+        });
+    }
+
+}
